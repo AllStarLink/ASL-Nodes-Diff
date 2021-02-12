@@ -1,0 +1,9 @@
+{
+    "require": {
+        "ext-redis": "*",
+        "vlucas/phpdotenv": "^4.0",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "illuminate/support": "^7.30"
+    }
+}
