@@ -1,5 +1,25 @@
 #!/bin/bash
 
+#
+# AllStarLink extnodes generator
+# 
+# Copyright (C) 2018-2021, AllStarLink, Inc.
+# 
+# Written by:
+# Tim Sawyer, WD6AWP 
+# Rob Vella, KK9ROB (send patch diff instead of full file)
+# Steve N4IRS
+#
+# See http://allstarlink.org for more information about
+# this project. Please do not directly contact
+# any of the maintainers of this project for assistance;
+# the project provides a web site, and mailing lists
+# for your use.
+#
+# This program is free software, distributed under the terms of
+# the GNU General Public License Version 3. See the LICENSE file
+# at the top of the source tree.
+
 TOPDOMAIN=allstarlink.org
 SUBDOMAINS="nodes1 nodes2 nodes3 nodes4"
 #URI="cgi-bin/nodes.pl"
