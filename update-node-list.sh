@@ -24,10 +24,9 @@ TOPDOMAIN=allstarlink.org
 SUBDOMAINS="nodes1 nodes2 nodes3 nodes4"
 URI="diffnodes.php"
 FILEPATH=/var/lib/asterisk
-FILEPATH=/tmp/heh
 EXTNODES=$FILEPATH/rpt_extnodes
 EXTNODESTMP=/tmp/rpt_extnodes-temp
-USERAGENT="UpdateNodeList,2.0.0-beta.4"
+USERAGENT="UpdateNodeList 2.0.0-beta.4"
 
 RUNONCE=$1
 
