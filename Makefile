@@ -1,10 +1,10 @@
 NAME = asl-nodes-diff
 
 install:
-       @if ! [ "$(shell id -u)" = 0 ];then
-             @echo "Please run as root or privileged user"
-             exit 1
-       fi
+ifneq ($(shell id -u), 0)
+	@echo "Please run as root or privileged user"
+	@exit 1
+endif
 	chmod 755 update-node-list*.sh
 	cp update-node-list*.sh /usr/local/sbin
 	cp update-node-list.service /etc/systemd/system
