@@ -41,14 +41,6 @@ if (file_exists($fullFile) && (time() - $cacheTime < filemtime($fullFile))) {
     $rows = getNodes($timeout);
     $queryTime = microtime(true) - $queryStart;
 
-    // Just return the total
-    if (isset($_GET['total'])) {
-        header("Cache-Control: no-cache");
-        header("Content-type: text/plain");
-        echo count($rows);
-        exit;
-    }
-
     ob_start();
     echo ";Full\n";
     echo "[extnodes]\n\n";

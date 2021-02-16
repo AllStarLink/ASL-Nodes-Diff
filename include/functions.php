@@ -1,6 +1,9 @@
 <?php
 
-
+/**
+ * @param $timeout
+ * @return mixed
+ */
 function getNodes($timeout)
 {
     /* Gather all registered nodes into $rows
@@ -10,7 +13,9 @@ function getNodes($timeout)
     */
 
     // Modified to collect proxy nodes as well. 
-    $SQL = "SELECT name,ipaddr,port,udpport,node_remotebase,proxy_ip FROM user_Nodes JOIN user_Servers USING (Config_ID) WHERE Status='Active' AND name <> '' AND (ipaddr IS NOT NULL or ipaddr <> '') AND (regseconds > $timeout OR proxy_ip <> '')";
+    $SQL = "SELECT name,ipaddr,port,udpport,node_remotebase,proxy_ip FROM user_Nodes JOIN user_Servers USING (Config_ID)";
+    $SQL .= " WHERE Status='Active' AND name <> '' AND (ipaddr IS NOT NULL or ipaddr <> '') AND (regseconds > $timeout OR proxy_ip <> '')";
+    
     $sth = \DB::prepare($SQL);
     $sth->execute();
     $rows = $sth->fetchAll();

@@ -4,9 +4,8 @@ Wants=network.target
 After=network-online.target asterisk.service
 
 [Service]
-StandardOutput=null
 ExecStart=/usr/local/sbin/update-node-list.sh
-ExecStop=/usr/bin/killall -9 update-node-list
+ExecStop=/usr/bin/kill -9 $MAINPID
 Restart=always
 RestartSec=10
 

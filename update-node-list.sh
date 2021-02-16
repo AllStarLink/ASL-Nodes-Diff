@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 # AllStarLink extnodes generator
 # 
@@ -45,6 +44,7 @@ RSYNC=$(which rsync)
 verbose=0
 long_sleep=300
 sleep=60
+short_sleep=5
 dry_run=0
 downloads=0
 retries=0
@@ -52,7 +52,7 @@ last_hash=$(grep SHA1 $EXTNODES | cut -d "=" -f 2)
 
 debugLog() {
   if [ $verbose -ne 0 ]; then
-    echo $1
+    echo $@
   fi
 }
 
@@ -103,14 +103,13 @@ getNodes() {
           fi
 
           debugLog "Retrieved node list from $i.$TOPDOMAIN"
-          debugLog ""
 
           checkRunOnce
 
           if [ $dry_run -eq 0 ]; then
             sleep $sleep
           else
-            sleep 5
+            sleep $short_sleep
           fi
 
         else
@@ -119,12 +118,11 @@ getNodes() {
           if [ $? -eq 0 ]; then
             # This is a differential
             debugLog "Retrieved differential patch from $i.$TOPDOMAIN"
-            patch $EXTNODES $EXTNODESTMP
+            debugLog "$(patch $EXTNODES $EXTNODESTMP)"
 
             checkRunOnce
 
             debugLog "Sleeping for $sleep"
-            debugLog ""
             sleep $sleep
           else
             $GREP -q ";Empty" $EXTNODESTMP
@@ -168,7 +166,7 @@ getNodes() {
           fi
         else
           debugLog "Sleeping for next subdomain"
-          sleep 5
+          sleep $short_sleep
         fi
       fi
     done
