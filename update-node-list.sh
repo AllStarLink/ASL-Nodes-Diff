@@ -22,11 +22,12 @@
 
 TOPDOMAIN=allstarlink.org
 SUBDOMAINS="nodes1 nodes2 nodes3 nodes4"
-#URI="cgi-bin/nodes.pl"
 URI="diffnodes.php"
 FILEPATH=/var/lib/asterisk
+FILEPATH=/tmp/heh
 EXTNODES=$FILEPATH/rpt_extnodes
 EXTNODESTMP=/tmp/rpt_extnodes-temp
+USERAGENT="UpdateNodeList,2.0.0-beta.4"
 
 RUNONCE=$1
 
@@ -74,7 +75,7 @@ getNodes() {
         last_hash=""
       fi
 
-      $WGET -q -O $EXTNODESTMP $url
+      $WGET --user-agent="$USERAGENT" -q -O $EXTNODESTMP $url
 
       res=$?
 
