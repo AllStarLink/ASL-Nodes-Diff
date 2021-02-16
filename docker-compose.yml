@@ -1,0 +1,32 @@
+version: "3"
+services:
+  nodes-nginx:
+    container_name: nodes-nginx
+    volumes:
+      - ./docker/nginx:/etc/nginx
+      - .:/var/www
+      - /var/log/nginx:/var/log/nginx
+    restart: unless-stopped
+    image: nginx:latest
+  nodes-cron:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    container_name: nodes-cron
+    volumes:
+      - .:/var/www
+    restart: unless-stopped
+  nodes-php74:
+        build:
+           context: .
+           dockerfile: Dockerfile.php
+        container_name: nodes-php74
+        volumes:
+           - .:/var/www
+           - ./docker/php:/usr/local/etc
+           - /docker/sock:/sock
+        restart: unless-stopped
+        command: bash -xc "cd /var/www/public ; php-fpm"
+networks:
+  default:
+    name: register
