@@ -24,7 +24,6 @@ services:
         volumes:
            - .:/var/www
            - ./docker/php:/usr/local/etc
-           - /docker/sock:/sock
         restart: unless-stopped
         command: bash -xc "cd /var/www/public ; php-fpm"
 networks:

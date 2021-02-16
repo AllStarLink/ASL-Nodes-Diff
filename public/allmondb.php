@@ -38,17 +38,17 @@ if (file_exists($cacheFile) && (time() - $cacheTime < filemtime($cacheFile))) {
     $timeout = $genTime - $regTime;
     $servedFromCache = "No";
     $queryStart = microtime(true);
-    $data['rows'] = getNodes();
+    $data['rows'] = getAllNodes();
     $data['queryTime'] = microtime(true) - $queryStart;
 
-    // cache getNodes() result and make $queryTime persist for wget.
+    // cache getAllNodes() result and make $queryTime persist for wget.
     file_put_contents($cacheFile, serialize($data));
 }
 
 header("Content-type: text/plain");
 header("Cache-Control: public, max-age=$cacheTime");
 
-printNodes($data['rows']);
+printAllmonNodes($data['rows']);
 
 // Time to serve page
 $serveTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
@@ -65,7 +65,7 @@ echo " UTC by ".getenv("HOSTNAME")."\n\n";
 /************************************************************
  * End of program execution. functions() below is ok in php *
  ************************************************************/
-function getNodes()
+function getAllNodes()
 {
     /* Gather all nodes into $rows */
 
@@ -82,7 +82,7 @@ function getNodes()
     return $rows;
 }
 
-function printNodes($rows)
+function printAllmonNodes($rows)
 {
     foreach ($rows as $row) {
         $line = implode('|', $row);
