@@ -26,7 +26,7 @@ URI="diffnodes.php"
 FILEPATH=/var/lib/asterisk
 EXTNODES=$FILEPATH/rpt_extnodes
 EXTNODESTMP=/tmp/rpt_extnodes-temp
-USERAGENT="UpdateNodeList 2.0.0-beta.4"
+USERAGENT="UpdateNodeList/2.0.0-beta.4"
 
 RUNONCE=$1
 
@@ -41,10 +41,11 @@ DATE=$(which date)
 RSYNC=$(which rsync)
 
 # Diagnostics
+# Enable this for debugging
+verbose=0
 long_sleep=300
 sleep=60
 dry_run=0
-verbose=1
 downloads=0
 retries=0
 last_hash=$(grep SHA1 $EXTNODES | cut -d "=" -f 2)
@@ -54,6 +55,8 @@ debugLog() {
     echo $1
   fi
 }
+
+errorLog() { echo "$@" 1>&2; }
 
 checkRunOnce() {
   if [ "${RUNONCE}" == "once" ]; then
@@ -135,8 +138,7 @@ getNodes() {
               sleep $sleep
             fi
 
-            debugLog "Retreived garbage node list from $i.$TOPDOMAIN"
-            debugLog "Moving to next node server in list..."
+            errorLog "Retreived garbage node list from $i.$TOPDOMAIN. Moving to next node server in list..."
 
             $RM -f $EXTNODESTMP
             downloads=0
@@ -154,7 +156,7 @@ getNodes() {
       else
         $RM -f $EXTNODESTMP
         if [ $verbose -ne 0 ]; then
-          echo "Problem retrieving node list from $i.$TOPDOMAIN, trying another server"
+          errorLog "Problem retrieving node list from $i.$TOPDOMAIN, trying another server"
           downloads=0
           retries=$((retries + 1))
         fi

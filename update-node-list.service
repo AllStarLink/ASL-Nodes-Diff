@@ -1,15 +1,14 @@
 [Unit]
 Description=AllStar NodeList Diff Updater
 Wants=network.target
-After=network-online.target
-PartOf=asterisk.service
+After=network-online.target asterisk.service
+
 [Service]
-Type=simple
 StandardOutput=null
-ExecStart=/usr/local/sbin/update-node-list.sh &
+ExecStart=/usr/local/sbin/update-node-list.sh
 ExecStop=/usr/bin/killall -9 update-node-list
-# safe_emulation
 Restart=always
 RestartSec=10
+
 [Install]
 WantedBy=multi-user.target
