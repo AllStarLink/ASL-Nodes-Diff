@@ -6,7 +6,7 @@ PartOf=asterisk.service
 [Service]
 Type=simple
 StandardOutput=null
-ExecStart=/usr/bin/update-node-list.sh &
+ExecStart=/usr/local/sbin/update-node-list.sh &
 ExecStop=/usr/bin/killall -9 update-node-list
 # safe_emulation
 Restart=always
