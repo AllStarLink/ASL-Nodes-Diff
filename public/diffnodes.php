@@ -24,7 +24,7 @@
 
 require_once __DIR__.'/../include/autoload.php';
 
-$cacheTime = 10;  // seconds
+$cacheTime = 60;  // seconds
 $maxRegTime = 600;
 
 $dataDir = __DIR__.'/../data/';
@@ -33,6 +33,7 @@ $fullFile = $dataDir.'extnodes.txt';
 // Serve from the cache if it is younger than $cachetime
 if (file_exists($fullFile) && (time() - $cacheTime < filemtime($fullFile))) {
     $full = file_get_contents($fullFile);
+    $cacheTime = $cacheTime - (time() - filemtime($fullFile));
 } else {
     $genTime = time();
     $timeout = $genTime - $maxRegTime;
@@ -98,7 +99,9 @@ printOutput(";Diff\n".$patch, $hash);
 
 function printOutput($data, $etag = false)
 {
-    header("Cache-Control: public, max-age=30");
+    global $cacheTime;
+    
+    header("Cache-Control: public, max-age=$cacheTime, stale-if-error=120");
     header("Content-type: text/plain");
     
     if ($etag) {

@@ -21,7 +21,7 @@
  */
 
 $cacheFile = "/tmp/extnodes.txt";
-$cacheTime = 10;  // seconds
+$cacheTime = 30;  // seconds
 $maxRegTime = 600;
 
 /* Connect to database */
@@ -31,11 +31,12 @@ require_once __DIR__.'/../include/autoload.php';
 if (file_exists($cacheFile) && (time() - $cacheTime < filemtime($cacheFile))) {
     $data = unserialize(file_get_contents($cacheFile));
     $genTime = filemtime($cacheFile);
-    $servedfromcache = "Yes";
+    $servedFromCache = "Yes";
+    $cacheTime = $cacheTime - (time() - filemtime($cacheFile));
 } else {
     $genTime = time();
     $timeout = $genTime - $maxRegTime;
-    $servedfromcache = "No";
+    $servedFromCache = "No";
     $queryStart = microtime(true);
     $data['rows'] = getNodes($timeout);
     $data['queryTime'] = microtime(true) - $queryStart;
@@ -54,26 +55,26 @@ if (isset($_GET['total'])) {
     exit;
 }
 
-header("Cache-Control: public, max-age=10");
+header("Cache-Control: public, max-age=$cacheTime");
 header("Content-type: text/plain");
 
-ob_start();
-ob_start("ob_gzhandler");
-echo "[extnodes]\n\n";
+try {
+    echo "[extnodes]\n\n";
 
-printNodes($rows);
+    printNodes($rows);
+    
+    // Time to serve page
+    $serveTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+    $records = count($rows);
 
-// Time to serve page
-$serveTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
-$records = count($rows);
-
-// echo stats
-$docker_host = gethostname();
-printf(";Generated $records records in %.3f seconds.\n", round($data['queryTime'], 3));
-printf(";Served in %.3f seconds.\n", round($serveTime, 3));
-echo ";Served from cache: $servedfromcache\n";
-echo ";Generated at ";
-echo gmdate("Y-m-d H:i:s", $genTime);
-echo " UTC by ".getenv("HOSTNAME")."\n\n";
-
-ob_end_flush();
+    // echo stats
+    $docker_host = gethostname();
+    printf(";Generated $records records in %.3f seconds.\n", round($data['queryTime'], 3));
+    printf(";Served in %.3f seconds.\n", round($serveTime, 3));
+    echo ";Served from cache: $servedFromCache\n";
+    echo ";Generated at ";
+    echo gmdate("Y-m-d H:i:s", $genTime);
+    echo " UTC by ".getenv("HOSTNAME")."\n\n";
+} catch (\Throwable $e) {
+    http_response_code(500);
+}
