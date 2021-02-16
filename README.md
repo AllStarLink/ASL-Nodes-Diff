@@ -2,6 +2,8 @@
 
 Client and server for differential node updates from AllStarLink.
 
+`update-node-list.sh` replaces `rc.updatenodelist` from ASL 1.01 and earlier. It is a drop-in replacement, but please use the Client Installation instructions below.
+
 ## Client Installation
 ```sudo make install```
 ## Server Installation
