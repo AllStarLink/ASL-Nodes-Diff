@@ -29,16 +29,6 @@ USERAGENT="UpdateNodeList/2.0.0-beta.4"
 
 RUNONCE=$1
 
-WGET=$(which wget)
-CP=$(which cp)
-MV=$(which mv)
-RM=$(which rm)
-CHMOD=$(which chmod)
-GREP=$(which grep)
-CAT=$(which cat)
-DATE=$(which date)
-RSYNC=$(which rsync)
-
 # Diagnostics
 # Enable this for debugging
 verbose=0
@@ -66,8 +56,8 @@ checkRunOnce() {
 }
 
 getLastHash() {
-  last_hash=$($GREP SHA1 $EXTNODES | cut -d "=" -f 2 | tail -n 1)
-  debugLog "File Hash: $last_hash"
+  last_hash=$(grep SHA1 $EXTNODESTMP | cut -d "=" -f 2 | tail -n 1)
+  debugLog "New Hash: $last_hash"
 }
 
 getNodes() {
@@ -82,31 +72,32 @@ getNodes() {
         last_hash=""
       fi
 
-      $WGET --user-agent="$USERAGENT" -q -O $EXTNODESTMP $url
+      wget --user-agent="$USERAGENT" -q -O $EXTNODESTMP $url
       res=$?
+
+      debugLog "$(date)"
       getLastHash
 
       if [ $res -eq 0 ]; then
-        debugLog "$($DATE)"
 
         # Determine if differential
-        $GREP -q ";Full" $EXTNODESTMP
-        
+        grep -q ";Full" $EXTNODESTMP
+
         if [ $? -eq 0 ]; then
           # Full Download
           downloads=$((downloads + 1))
           retries=0
 
           if [ $dry_run -eq 0 ]; then
-            $CHMOD 700 $EXTNODESTMP
-            $CP $EXTNODESTMP ${EXTNODES}-temp
-            $MV -f ${EXTNODES}-temp ${EXTNODES}
+            chmod 700 $EXTNODESTMP
+            cp $EXTNODESTMP ${EXTNODES}-temp
+            mv -f ${EXTNODES}-temp ${EXTNODES}
           else
             $CAT $EXTNODESTMP
           fi
 
-          debugLog "Retrieved full node list from $i.$TOPDOMAIN"
-
+          debugLog "Retrieved full node list from $i.$TOPDOMAIN. Sleeping."
+          
           checkRunOnce
 
           if [ $dry_run -eq 0 ]; then
@@ -116,46 +107,60 @@ getNodes() {
           fi
 
         else
-          $GREP -q ";Diff" $EXTNODESTMP
-          
+          grep -q ";Diff" $EXTNODESTMP
+
           if [ $? -eq 0 ]; then
             # This is a differential
             debugLog "Retrieved differential patch from $i.$TOPDOMAIN"
-            debugLog "$(patch $EXTNODES $EXTNODESTMP)"
 
-            checkRunOnce
+            rm -f $EXTNODESTMP.tmp*
+            cp $EXTNODES $EXTNODESTMP.tmp
+
+            patch -t -s $EXTNODESTMP.tmp $EXTNODESTMP
+            patch_res=$?
+            echo "Patch status: $patch_res"
+
+            if [ $patch_res -eq 0 ]; then
+              mv $EXTNODESTMP.tmp $EXTNODES
+              checkRunOnce
+            else
+              last_hash=""
+            fi
+
+            rm -f $EXTNODESTMP.tmp*
 
             debugLog "Sleeping for $sleep"
             sleep $sleep
           else
-            $GREP -q ";Empty" $EXTNODESTMP
+            grep -q ";Empty" $EXTNODESTMP
 
             if [ $? -eq 0 ]; then
               debugLog "Empty patch from $i.$TOPDOMAIN. Sleeping for $sleep."
-              debugLog ""
 
               checkRunOnce
 
               sleep $sleep
-            fi
-
-            errorLog "Retreived garbage node list from $i.$TOPDOMAIN. Moving to next node server in list..."
-
-            $RM -f $EXTNODESTMP
-            downloads=0
-            retries=$((retries + 1))
-
-            if [ $retries -gt 50 ]; then
-              sleep $long_sleep # doze to lighten network load
             else
-              sleep 30
-            fi
+              errorLog "Retreived garbage node list from $i.$TOPDOMAIN. Moving to next node server in list..."
 
-            return 2
+              rm -f $EXTNODESTMP*
+
+              last_hash=""
+              downloads=0
+              retries=$((retries + 1))
+
+              if [ $retries -gt 50 ]; then
+                sleep $long_sleep # doze to lighten network load
+              else
+                sleep 30
+              fi
+
+              return 2
+            fi
           fi
         fi
       else
-        $RM -f $EXTNODESTMP
+        rm -f $EXTNODESTMP
         if [ $verbose -ne 0 ]; then
           errorLog "Problem retrieving node list from $i.$TOPDOMAIN, trying another server"
           downloads=0
