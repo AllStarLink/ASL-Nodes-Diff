@@ -84,7 +84,7 @@ $patch = shell_exec("diff $hashFile $fullFile");
 
 // In case a prune happens or there's no difference
 if (empty($patch)) {
-    printOutput(";Empty");
+    printOutput(";Empty\n;SHA1=$hash");
 }
 
 printOutput(";Diff\n".$patch, $hash);

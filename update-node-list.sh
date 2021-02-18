@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 # AllStarLink extnodes generator
-# 
+#
 # Copyright (C) 2018-2021, AllStarLink, Inc.
-# 
+#
 # Written by:
-# Tim Sawyer, WD6AWP 
+# Tim Sawyer, WD6AWP
 # Rob Vella, KK9ROB (send patch diff instead of full file)
 # Steve N4IRS
 #
@@ -48,7 +48,7 @@ short_sleep=5
 dry_run=0
 downloads=0
 retries=0
-last_hash=$(grep SHA1 $EXTNODES | cut -d "=" -f 2)
+last_hash=""
 
 debugLog() {
   if [ $verbose -ne 0 ]; then
@@ -65,6 +65,11 @@ checkRunOnce() {
   fi
 }
 
+getLastHash() {
+  last_hash=$($GREP SHA1 $EXTNODES | cut -d "=" -f 2 | tail -n 1)
+  debugLog "File Hash: $last_hash"
+}
+
 getNodes() {
   for i in $SUBDOMAINS; do
     res=0
@@ -78,21 +83,19 @@ getNodes() {
       fi
 
       $WGET --user-agent="$USERAGENT" -q -O $EXTNODESTMP $url
-
       res=$?
+      getLastHash
 
       if [ $res -eq 0 ]; then
         debugLog "$($DATE)"
 
         # Determine if differential
         $GREP -q ";Full" $EXTNODESTMP
-
+        
         if [ $? -eq 0 ]; then
           # Full Download
           downloads=$((downloads + 1))
           retries=0
-          last_hash=$(grep SHA1 $EXTNODESTMP | cut -d "=" -f 2)
-          debugLog "File Hash: $last_hash"
 
           if [ $dry_run -eq 0 ]; then
             $CHMOD 700 $EXTNODESTMP
@@ -102,7 +105,7 @@ getNodes() {
             $CAT $EXTNODESTMP
           fi
 
-          debugLog "Retrieved node list from $i.$TOPDOMAIN"
+          debugLog "Retrieved full node list from $i.$TOPDOMAIN"
 
           checkRunOnce
 
@@ -114,7 +117,7 @@ getNodes() {
 
         else
           $GREP -q ";Diff" $EXTNODESTMP
-
+          
           if [ $? -eq 0 ]; then
             # This is a differential
             debugLog "Retrieved differential patch from $i.$TOPDOMAIN"
