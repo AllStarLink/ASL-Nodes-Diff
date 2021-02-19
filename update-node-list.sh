@@ -90,10 +90,9 @@ getNodes() {
 
           if [ $dry_run -eq 0 ]; then
             chmod 700 $EXTNODESTMP
-            cp $EXTNODESTMP ${EXTNODES}-temp
-            mv -f ${EXTNODES}-temp ${EXTNODES}
+            cat ${EXTNODESTMP} > ${EXTNODES}
           else
-            $CAT $EXTNODESTMP
+            cat $EXTNODESTMP
           fi
 
           debugLog "Retrieved full node list from $i.$TOPDOMAIN. Sleeping."
@@ -123,7 +122,7 @@ getNodes() {
             debugLog "Patch status: $patch_res"
 
             if [ $patch_res -eq 0 ]; then
-              mv $EXTNODESTMP.tmp $EXTNODES
+              cat $EXTNODESTMP.tmp > $EXTNODES
               checkRunOnce
             else
               last_hash=""
