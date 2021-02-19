@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if [ "$1" = "configure" ]; then
+        echo "Disabling old service..."
+        systemctl disable updatenodelist
+        systemctl stop updatenodelist
+        echo "Starting new service..."
+        systemctl enable update-node-list
+        systemctl restart update-node-list
+fi
+
