@@ -1,5 +1,11 @@
 NAME = asl-nodes-diff
 
+deb:
+	cp update-node-list*.sh deb/asl-update-node-list_2.0.0-beta.4/usr/local/sbin
+	cp update-node-list.service deb/asl-update-node-list_2.0.0-beta.4/etc/systemd/system
+	cd deb
+	dpkg --build asl-update-node-list_2.0.0-beta.4
+
 install:
 ifneq ($(shell id -u), 0)
 	@echo "Please run as root or privileged user"
