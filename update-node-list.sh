@@ -116,9 +116,11 @@ getNodes() {
             rm -f $EXTNODESTMP.tmp*
             cp $EXTNODES $EXTNODESTMP.tmp
 
-            patch -t -s $EXTNODESTMP.tmp $EXTNODESTMP
+            patch_out=$(patch -t -s $EXTNODESTMP.tmp $EXTNODESTMP)
             patch_res=$?
-            echo "Patch status: $patch_res"
+
+            debugLog "$patch_out"
+            debugLog "Patch status: $patch_res"
 
             if [ $patch_res -eq 0 ]; then
               mv $EXTNODESTMP.tmp $EXTNODES
