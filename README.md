@@ -6,6 +6,11 @@ Client and server for differential node updates from AllStarLink.
 
 ## Client Installation
 ```sudo make install```
+
+or on Debian based systems:
+
+```dpkg -i deb/asl-update-node-list_2.0.0-beta.4.deb```
+
 ## Server Installation
 * Modify .env to fit environment: 
 ```
