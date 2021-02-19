@@ -28,7 +28,9 @@ Tim Sawyer, WD6AWP
 
 Rob Vella, KK9ROB
 
-Tom Hayward, KD7LXL 
+Tom Hayward, KD7LXL
+
+Steve Zingman, N4IRS
 
 ## License
 GPL-3.0 License
