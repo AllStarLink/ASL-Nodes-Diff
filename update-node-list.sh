@@ -20,12 +20,12 @@
 # at the top of the source tree.
 
 TOPDOMAIN=allstarlink.org
-SUBDOMAINS="nodes1 nodes2 nodes3 nodes4"
+SUBDOMAINS="snodes"
 URI="diffnodes.php"
 FILEPATH=/var/lib/asterisk
 EXTNODES=$FILEPATH/rpt_extnodes
 EXTNODESTMP=/tmp/rpt_extnodes-temp
-USERAGENT="UpdateNodeList/2.0.0-beta.4"
+USERAGENT="UpdateNodeList/2.0.0-beta.5"
 
 RUNONCE=$1
 

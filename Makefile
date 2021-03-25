@@ -3,9 +3,9 @@ NAME = asl-nodes-diff
 .PHONY: deb install
 
 deb:
-	cp update-node-list*.sh deb/asl-update-node-list_2.0.0-beta.4_all/usr/local/sbin
-	cp update-node-list.service deb/asl-update-node-list_2.0.0-beta.4_all/etc/systemd/system
-	dpkg --build deb/asl-update-node-list_2.0.0-beta.4_all
+	cp update-node-list*.sh deb/asl-update-node-list_2.0.0-beta.5_all/usr/local/sbin
+	cp update-node-list.service deb/asl-update-node-list_2.0.0-beta.5_all/etc/systemd/system
+	dpkg --build deb/asl-update-node-list_2.0.0-beta.5_all
 
 install:
 ifneq ($(shell id -u), 0)
