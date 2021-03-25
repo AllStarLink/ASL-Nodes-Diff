@@ -1,4 +1,0 @@
-#!/bin/sh -e
-
-systemctl disable update-node-list
-systemctl stop update-node-list

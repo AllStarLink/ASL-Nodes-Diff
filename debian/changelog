@@ -1,0 +1,5 @@
+asl-update-node-list (2.0.0-beta.5-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Rob Vella <me@robvella.com>  Thu, 25 Mar 2021 09:40:04 -0700

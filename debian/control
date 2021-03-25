@@ -1,0 +1,13 @@
+Source: asl-update-node-list
+Section: comm
+Priority: optional
+Maintainer: Rob Vella <me@robvella.com>
+Build-Depends: debhelper (>= 11)
+Standards-Version: 4.1.3
+Homepage: http://www.allstarlink.org
+
+Package: asl-update-node-list
+Architecture: all
+Depends: ${misc:Depends}
+Description: AllStarLink Differential Node List Updater
+ Replaces old rc.updatenodelist to provide differential updates

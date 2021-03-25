@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+if [ "$1" = "configure" ]; then
+    if systemctl is-active --quiet updatenodelist; then
+        echo "Disabling old service..."
+        set +e
+        systemctl disable updatenodelist
+        systemctl stop updatenodelist
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0
