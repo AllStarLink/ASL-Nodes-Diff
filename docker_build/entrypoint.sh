@@ -26,10 +26,9 @@ cat debian/changelog.bkp | sed "s/^\([^ ]* (\)\([^)]*\)\().*\)$/\1\2~${OS_CODENA
 debuild $OPTS
 mv debian/changelog.bkp debian/changelog
 BASENAME=$(head -1 debian/changelog | sed 's/^\([^ ]*\) (\([0-9]*:\)\?\([^)]*\)).*/\1_\3/g')
-cd ..
 mkdir -p build/$BASENAME
-mv *.deb build/$BASENAME
-mv *.build build/$BASENAME
-mv *.buildinfo build/$BASENAME
-mv *.changes build/$BASENAME
+mv ../*.deb build/$BASENAME
+mv ../*.build build/$BASENAME
+mv ../*.buildinfo build/$BASENAME
+mv ../*.changes build/$BASENAME
 if [ "$(id -u)" -ne 0 ]; then chown -R user /src/*; fi
