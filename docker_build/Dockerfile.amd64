@@ -1,0 +1,34 @@
+FROM amd64/debian:buster
+
+ARG USER_ID
+ARG GROUP_ID
+
+RUN addgroup --gid $GROUP_ID user; exit 0
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user; exit 0
+
+# Install build dependencies
+RUN apt-get update && apt-get -y install \
+    build-essential \
+    devscripts \
+    fakeroot \
+    debhelper \
+    automake \
+    autotools-dev \
+    pkg-config \
+    git \
+    ca-certificates \
+    wget \
+    --no-install-recommends
+
+# Install application dependencies
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    debhelper\ 
+    --no-install-recommends
+
+# Import entrypoint script
+COPY ./entrypoint.sh /entrypoint.sh
+
+# Make Executable
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
