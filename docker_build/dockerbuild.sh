@@ -4,6 +4,11 @@ set -e
 
 while [[ $# -gt 0 ]]; do
   case $1 in
+    -o|--operating-system)
+      $OPERATINGSYSTEM=$2
+      shift
+      shift
+      ;;
     -r|--commit-versioning)
       COMMIT_VERSIONING=YES
       shift
@@ -15,12 +20,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-A="amd64"
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PDIR=$(dirname $DIR)
 
 DPKG_BUILDOPTS="-b -uc -us"
-docker build -f $DIR/Dockerfile.$A -t asl-nodes-diff_builder.$A --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) $DIR
-docker run -v $PDIR:/src -e DPKG_BUILDOPTS="$DPKG_BUILDOPTS" -e COMMIT_VERSIONING="$COMMIT_VERSIONING" asl-nodes-diff_builder.$A
-docker image rm --force asl-nodes-diff_builder.$A
+docker build -f $DIR/Dockerfile -t asl-nodes-diff_builder --build-arg OS=$OPERATINGSYSTEM --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) $DIR
+docker run -v $PDIR:/src -e DPKG_BUILDOPTS="$DPKG_BUILDOPTS" -e COMMIT_VERSIONING="$COMMIT_VERSIONING" asl-nodes-diff_builder
+docker image rm --force asl-nodes-diff_builder
