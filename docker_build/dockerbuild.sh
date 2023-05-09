@@ -5,7 +5,7 @@ set -e
 while [[ $# -gt 0 ]]; do
   case $1 in
     -o|--operating-system)
-      $OPERATINGSYSTEM=$2
+      OPERATINGSYSTEM=$2
       shift
       shift
       ;;
