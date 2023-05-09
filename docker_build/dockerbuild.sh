@@ -23,6 +23,10 @@ done
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PDIR=$(dirname $DIR)
 
+if [ -z "$OPERATINGSYSTEM" ]; then
+  OPERATINGSYSTEM=buster
+fi
+
 DPKG_BUILDOPTS="-b -uc -us"
 docker build -f $DIR/Dockerfile -t asl-nodes-diff_builder --build-arg OS=$OPERATINGSYSTEM --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) $DIR
 docker run -v $PDIR:/src -e DPKG_BUILDOPTS="$DPKG_BUILDOPTS" -e COMMIT_VERSIONING="$COMMIT_VERSIONING" asl-nodes-diff_builder
